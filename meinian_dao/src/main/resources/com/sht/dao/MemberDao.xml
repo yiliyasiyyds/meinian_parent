@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sht.dao.MemberDao">
+    <select id="findByPhone" resultType="long">
+        select count(1) from t_member where phoneNumber = #{phone}
+    </select>
+    <insert id="quickAdd" parameterType="member" useGeneratedKeys="true" keyProperty="id">
+        insert into t_member(name,sex,idCard,phoneNumber,regTime) values (#{name},#{sex},#{idCard},#{phoneNumber},#{regTime})
+    </insert>
+    <select id="findNameById" resultType="member">
+        select name from t_member where id = #{id}
+    </select>
+    <select id="findMemberCountByMonth" resultType="long">
+        select count(*) from t_member where regTime &lt;= #{date}
+    </select>
+    <select id="todayNewMember" resultType="long">
+        select count(*) from t_member where regTime = #{today}
+    </select>
+    <select id="findTotalMember" resultType="long">
+        select count(*) from t_member
+    </select>
+    <select id="findNewMember" resultType="long">
+        select count(*) from t_member where regTime &gt;= #{date}
+    </select>
+</mapper>

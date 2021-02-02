@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sht.dao.SetmealDao">
+    <insert id="add" parameterType="setmeal" useGeneratedKeys="true" keyProperty="id">
+        insert into t_setmeal(name,code,helpCode,sex,age,price,remark,attention,img) values(#{name},#{code},#{helpCode},#{sex},#{age},#{price},#{remark},#{attention},#{img})
+    </insert>
+    <insert id="setSetmealAndTravelGroup">
+        insert into t_setmeal_travelgroup values
+        <foreach collection="array" separator="," item="id">
+            (#{setmealId},#{id})
+        </foreach>
+    </insert>
+    <select id="findPage" resultType="setmeal">
+        select * from t_setmeal
+        <where>
+            <if test="value!=null and value.length>0">
+                code=#{value} or name like concat("%",#{value},"%") or helpCode=#{value}
+            </if>
+        </where>
+    </select>
+    <select id="findById" resultType="setmeal">
+        select * from t_setmeal where id = #{id}
+    </select>
+    <select id="findTravelGroupIdBySetmealId" resultType="int">
+        select travelgroup_id from t_setmeal_travelgroup where setmeal_id = #{id}
+    </select>
+    <delete id="delete">
+        delete from t_setmeal where id = #{id}
+    </delete>
+    <delete id="deleteSetmealAndTravelGroupBySetmealId">
+        delete
+        from t_setmeal_travelgroup
+        where setmeal_id = #{id}
+    </delete>
+    <update id="update" parameterType="setmeal">
+        update t_setmeal
+        <set>
+            <if test="name != null and name.length>0">
+                name = #{name},
+            </if>
+            <if test="code != null and code.length>0">
+                code = #{code},
+            </if>
+            <if test="helpCode != null and helpCode.length>0">
+                helpCode = #{helpCode},
+            </if>
+            <if test="sex != null and sex.length>0">
+                sex = #{sex},
+            </if>
+            <if test="age != null and age.length>0">
+                age = #{age},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="remark != null and remark.length>0">
+                remark = #{remark},
+            </if>
+            <if test="attention != null and attention.length>0">
+                attention = #{attention},
+            </if>
+            <if test="img != null and img.length>0">
+                img = #{img},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="findAll" resultType="setmeal">
+        select * from t_setmeal
+    </select>
+    <select id="findById2" resultMap="sm">
+        select * from t_setmeal where id = #{id}
+    </select>
+    <resultMap id="sm" type="setmeal">
+        <id column="id" property="id" ></id>
+        <result column="name" property="name" ></result>
+        <result column="code" property="code" ></result>
+        <result column="helpCode" property="helpCode" ></result>
+        <result column="sex" property="sex" ></result>
+        <result column="age" property="age" ></result>
+        <result column="price" property="price" ></result>
+        <result column="remark" property="remark" ></result>
+        <result column="attention" property="attention" ></result>
+        <result column="img" property="img" ></result>
+        <collection property="travelGroups" column="id"
+                    select="com.sht.dao.TravelGroupDao.findById2"></collection>
+    </resultMap>
+    <select id="findNameById" resultType="String">
+        select name from t_setmeal where id = #{id}
+    </select>
+    <select id="findSetmealCountById" resultType="long">
+        select count(*) from t_order where setmeal_id = #{id}
+    </select>
+</mapper>
